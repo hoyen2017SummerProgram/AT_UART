@@ -62,13 +62,16 @@ static void USART_Config(void)
   RCC_AHBPeriphClockCmd(WS751_UART_TX_GPIO_CLK | WS751_UART_RX_GPIO_CLK, ENABLE);
 
   /* Enable USART clock */
-  RCC_APB1PeriphClockCmd(WS751_UART_CLK, ENABLE);
+  RCC_APB2PeriphClockCmd(WS751_UART_CLK, ENABLE);
+  RCC_APB1PeriphClockCmd(DEBUG_COM_CLK, ENABLE);
 
   /* Connect PXx to USARTx_Tx */
   GPIO_PinAFConfig(WS751_UART_TX_GPIO_PORT, WS751_UART_TX_SOURCE, WS751_UART_TX_AF);
+  GPIO_PinAFConfig(DEBUG_COM_TX_GPIO_PORT, DEBUG_COM_TX_SOURCE, DEBUG_COM_TX_AF);
 
   /* Connect PXx to USARTx_Rx */
   GPIO_PinAFConfig(WS751_UART_RX_GPIO_PORT, WS751_UART_RX_SOURCE, WS751_UART_RX_AF);
+  GPIO_PinAFConfig(DEBUG_COM_RX_GPIO_PORT, DEBUG_COM_RX_SOURCE, DEBUG_COM_RX_AF);
 
   /* Configure USART Tx as alternate function push-pull */
   GPIO_InitStructure.GPIO_Pin = WS751_UART_TX_PIN;
@@ -83,7 +86,6 @@ static void USART_Config(void)
   GPIO_Init(WS751_UART_RX_GPIO_PORT, &GPIO_InitStructure);
   
   GPIO_InitStructure.GPIO_Pin = DEBUG_COM_TX_PIN;
-
   GPIO_Init(DEBUG_COM_TX_GPIO_PORT, &GPIO_InitStructure);
   GPIO_InitStructure.GPIO_Pin = DEBUG_COM_RX_PIN;
   GPIO_Init(DEBUG_COM_RX_GPIO_PORT, &GPIO_InitStructure);
@@ -104,9 +106,12 @@ static void USART_Config(void)
   USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
   /* USART configuration */
   USART_Init(WS751_UART, &USART_InitStructure);
-
   /* Enable USART */
   USART_Cmd(WS751_UART, ENABLE);
+  /* USART configuration */
+  USART_Init(DEBUG_COM, &USART_InitStructure);
+  /* Enable USART */
+  USART_Cmd(DEBUG_COM, ENABLE);
 
 }
 
